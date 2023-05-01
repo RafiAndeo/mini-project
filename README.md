@@ -1,4 +1,4 @@
-Initialize Project
+Project Development
 
-1. Initialize Config File
-2. Initialize Project Models
+1. Initialize Controller
+2. Initialize Model
