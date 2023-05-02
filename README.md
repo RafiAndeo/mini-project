@@ -1,4 +1,3 @@
 Project Development
 
-1. Initialize Controller
-2. Initialize Model
+1. Initialize Project Mid Development

@@ -2,7 +2,7 @@ package main
 
 import (
 	"mini-project/middlewares"
-	"mini-project/routes"
+	routes "mini-project/route"
 )
 
 func main() {
