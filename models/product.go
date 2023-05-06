@@ -35,5 +35,5 @@ type Product struct {
 	PublishedAt    string   `json:"published_at" form:"published_at"`
 	CreatedBy      string   `json:"created_by" form:"created_by"`
 	UpdatedBy      string   `json:"updated_by" form:"updated_by"`
-	UserActivityID uint     `json:"-" form:"-"`
+	UserActivityID uint     `json:"-" form:"-" gorm:"uniqueIndex:idx_product_user_activity"`
 }

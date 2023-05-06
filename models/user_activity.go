@@ -48,5 +48,5 @@ type UserActivity struct {
 	ThumbnailURL string     `json:"thumbnail_url" form:"thumbnail_url"`
 	Description  string     `json:"description" form:"description"`
 	Status       statusType `json:"status" form:"status" gorm:"enum('Started', 'Postponed', 'Canceled', 'Finished')"`
-	UserID       uint       `json:"-" form:"-"`
+	UserID       uint       `json:"-" form:"-" gorm:"uniqueIndex:idx_user_activity_user"`
 }

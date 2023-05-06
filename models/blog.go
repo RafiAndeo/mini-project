@@ -33,5 +33,5 @@ type Blog struct {
 	EstimatedReadTime string   `json:"estimated_read_time" form:"estimated_read_time"`
 	CreatedBy         string   `json:"created_by" form:"created_by"`
 	UpdatedBy         string   `json:"updated_by" form:"updated_by"`
-	UserActivityID    uint     `json:"-" form:"-"`
+	UserActivityID    uint     `json:"-" form:"-" gorm:"uniqueIndex:idx_blog_user_activity"`
 }
