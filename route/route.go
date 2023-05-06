@@ -1,50 +1,77 @@
 package routes
 
 import (
+	constants "mini-project/constant"
 	"mini-project/controllers"
+	"mini-project/middlewares"
 
+	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 )
 
-func New() *echo.Echo {
+func StartRoute() *echo.Echo {
 	e := echo.New()
 
-	// Routes
-	e.GET("/roles", controllers.GetRoles)
-	e.GET("/roles/:id", controllers.GetRole)
-	e.POST("/roles", controllers.CreateRole)
-	e.PUT("/roles", controllers.UpdateRole)
-	e.DELETE("/roles", controllers.DeleteRole)
+	// Section 22
+	middlewares.LogMiddleware(e)
 
-	e.GET("/events", controllers.GetEvents)
-	e.GET("/events/:id", controllers.GetEvent)
-	e.POST("/events", controllers.CreateEvent)
-	e.PUT("/events", controllers.UpdateEvent)
-	e.DELETE("/events", controllers.DeleteEvent)
+	e.POST("/user", controllers.CreateUserController)
+	e.POST("/user/login", controllers.LoginUserController)
 
-	e.GET("/users", controllers.GetUsers)
-	e.GET("/users/:id", controllers.GetUser)
-	e.POST("/users", controllers.CreateUser)
-	e.PUT("/users", controllers.UpdateUser)
-	e.DELETE("/users", controllers.DeleteUser)
+	u := e.Group("/users")
+	u.Use(echojwt.JWT([]byte(constants.SECRET_JWT)))
+	u.GET("", controllers.GetUsersController)
+	u.GET("/:id", controllers.GetUserController)
+	u.PUT("/:id", controllers.UpdateUserController)
+	u.DELETE("/:id", controllers.DeleteUserController)
 
-	e.GET("/blogs", controllers.GetBlogs)
-	e.GET("/blogs/:id", controllers.GetBlog)
-	e.POST("/blogs", controllers.CreateBlog)
-	e.PUT("/blogs", controllers.UpdateBlog)
-	e.DELETE("/blogs", controllers.DeleteBlog)
+	ua := e.Group("/user-activities")
+	ua.Use(echojwt.JWT([]byte(constants.SECRET_JWT)))
+	ua.GET("", controllers.GetUserActivityController)
+	ua.GET("/:id", controllers.GetUserActivityByUserController)
+	ua.POST("", controllers.CreateUserActivityController)
+	ua.PUT("/:id", controllers.UpdateUserActivityController)
+	ua.DELETE("/:id", controllers.DeleteUserActivityController)
 
-	e.GET("/products", controllers.GetProducts)
-	e.GET("/products/:id", controllers.GetProduct)
-	e.POST("/products", controllers.CreateProduct)
-	e.PUT("/products", controllers.UpdateProduct)
-	e.DELETE("/products", controllers.DeleteProduct)
+	r := e.Group("/roles")
+	r.Use(echojwt.JWT([]byte(constants.SECRET_JWT)))
+	r.GET("", controllers.GetRolesController)
+	r.GET("/:id", controllers.GetRoleController)
+	r.POST("", controllers.CreateRoleController)
+	r.PUT("/:id", controllers.UpdateRoleController)
+	r.DELETE("/:id", controllers.DeleteRoleController)
 
-	e.GET("/divisions", controllers.GetDivisions)
-	e.GET("/divisions/:id", controllers.GetDivision)
-	e.POST("/divisions", controllers.CreateDivision)
-	e.PUT("/divisions", controllers.UpdateDivision)
-	e.DELETE("/divisions", controllers.DeleteDivision)
+	p := e.Group("/products")
+	p.Use(echojwt.JWT([]byte(constants.SECRET_JWT)))
+	p.GET("", controllers.GetProductsController)
+	p.GET("/:id", controllers.GetProductController)
+	p.POST("", controllers.CreateProductController)
+	p.PUT("/:id", controllers.UpdateProductController)
+	p.DELETE("/:id", controllers.DeleteProductController)
+
+	ev := e.Group("/events")
+	ev.Use(echojwt.JWT([]byte(constants.SECRET_JWT)))
+	ev.GET("", controllers.GetEventsController)
+	ev.GET("/:id", controllers.GetEventController)
+	ev.POST("", controllers.CreateEventController)
+	ev.PUT("/:id", controllers.UpdateEventController)
+	ev.DELETE("/:id", controllers.DeleteEventController)
+
+	d := e.Group("/divisions")
+	d.Use(echojwt.JWT([]byte(constants.SECRET_JWT)))
+	d.GET("", controllers.GetDivisionsController)
+	d.GET("/:id", controllers.GetDivisionController)
+	d.POST("", controllers.CreateDivisionController)
+	d.PUT("/:id", controllers.UpdateDivisionController)
+	d.DELETE("/:id", controllers.DeleteDivisionController)
+
+	b := e.Group("/blogs")
+	b.Use(echojwt.JWT([]byte(constants.SECRET_JWT)))
+	b.GET("", controllers.GetBlogsController)
+	b.GET("/:id", controllers.GetBlogController)
+	b.POST("", controllers.CreateBlogController)
+	b.PUT("/:id", controllers.UpdateBlogController)
+	b.DELETE("/:id", controllers.DeleteBlogController)
 
 	return e
 }

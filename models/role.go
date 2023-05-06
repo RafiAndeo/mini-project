@@ -7,5 +7,5 @@ import (
 type Role struct {
 	gorm.Model
 	Name   string `json:"name" form:"name"`
-	UserID uint   `json:"-" form:"-"`
+	UserID uint   `json:"-" form:"-" gorm:"uniqueIndex:idx_role_user"`
 }

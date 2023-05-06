@@ -1,66 +1,109 @@
 package controllers
 
 import (
+	"mini-project/config"
 	"mini-project/lib/database"
 	"mini-project/models"
+	"mini-project/utils"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
-func GetUsers(c echo.Context) error {
-	users, err := database.GetUsers()
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+func GetUsersController(c echo.Context) error {
+	var users []models.User
+
+	if err := config.DB.Find(&users).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, users)
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success get all users",
+		"users":   users,
+	})
 }
 
-func GetUser(c echo.Context) error {
-	id := c.Param("id")
-	user, err := database.GetUser(id)
+func GetUserController(c echo.Context) error {
+	user := models.User{}
+	UserId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+		return err
 	}
-	return c.JSON(http.StatusOK, user)
+
+	if err1 := config.DB.First(&user, UserId).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success get user by id",
+		"user":    user,
+	})
 }
 
-func CreateUser(c echo.Context) error {
+func CreateUserController(c echo.Context) error {
 	user := models.User{}
 	c.Bind(&user)
-	err := database.CreateUser(&user)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+	hashPassword, err2 := utils.HashPassword(user.Password)
+	if err2 != nil {
+		return err2
 	}
-	return c.JSON(http.StatusOK, user)
+
+	user.Password = hashPassword
+
+	if err := config.DB.Save(&user).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success create new user",
+		"user":    user,
+	})
 }
 
-func UpdateUser(c echo.Context) error {
+func UpdateUserController(c echo.Context) error {
 	user := models.User{}
-	c.Bind(&user)
-	err := database.UpdateUser(&user)
+	UserId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+		return err
 	}
-	return c.JSON(http.StatusOK, user)
+
+	if err1 := config.DB.First(&user, UserId).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
+	}
+	c.Bind(&user)
+	if err1 := config.DB.Save(&user).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]string{
+		"message": "User updated successfully",
+	})
 }
 
-func DeleteUser(c echo.Context) error {
+func DeleteUserController(c echo.Context) error {
+	user := models.User{}
+	UserId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return err
+	}
+
+	if err1 := config.DB.Delete(&user, UserId).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
+	}
+
+	return c.JSON(http.StatusOK, map[string]string{
+		"message": "User deleted successfully",
+	})
+}
+
+func LoginUserController(c echo.Context) error {
 	user := models.User{}
 	c.Bind(&user)
-	err := database.DeleteUser(&user)
+
+	Token, err := database.LoginUsers(&user)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, user)
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "Success Login",
+		"token":   Token,
+	})
 }

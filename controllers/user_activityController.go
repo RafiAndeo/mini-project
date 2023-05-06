@@ -1,66 +1,78 @@
 package controllers
 
 import (
-	"mini-project/lib/database"
+	"mini-project/config"
 	"mini-project/models"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
-func GetUserActivities(c echo.Context) error {
-	user_activities, err := database.GetUserActivities()
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+func GetUserActivityController(c echo.Context) error {
+	var userActivity []models.UserActivity
+
+	if err := config.DB.Find(&userActivity).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, user_activities)
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":      "success get all user activity",
+		"userActivity": userActivity,
+	})
 }
 
-func GetUserActivity(c echo.Context) error {
-	id := c.Param("id")
-	user_activity, err := database.GetUserActivity(id)
+func GetUserActivityByUserController(c echo.Context) error {
+	userActivity := models.UserActivity{}
+	UserId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+		return err
 	}
-	return c.JSON(http.StatusOK, user_activity)
+
+	if err1 := config.DB.First(&userActivity, UserId).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":      "success get user activity by id",
+		"userActivity": userActivity,
+	})
 }
 
-func CreateUserActivity(c echo.Context) error {
-	user_activity := models.UserActivity{}
-	c.Bind(&user_activity)
-	err := database.CreateUserActivity(&user_activity)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+func CreateUserActivityController(c echo.Context) error {
+	userActivity := models.UserActivity{}
+	c.Bind(&userActivity)
+
+	if err := config.DB.Save(&userActivity).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, user_activity)
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":      "success create new user activity",
+		"userActivity": userActivity,
+	})
 }
 
-func UpdateUserActivity(c echo.Context) error {
-	user_activity := models.UserActivity{}
-	c.Bind(&user_activity)
-	err := database.UpdateUserActivity(&user_activity)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+func UpdateUserActivityController(c echo.Context) error {
+	userActivity := models.UserActivity{}
+	c.Bind(&userActivity)
+
+	if err := config.DB.Save(&userActivity).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, user_activity)
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":      "success update user activity",
+		"userActivity": userActivity,
+	})
 }
 
-func DeleteUserActivity(c echo.Context) error {
-	user_activity := models.UserActivity{}
-	c.Bind(&user_activity)
-	err := database.DeleteUserActivity(&user_activity)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+func DeleteUserActivityController(c echo.Context) error {
+	userActivity := models.UserActivity{}
+	c.Bind(&userActivity)
+
+	if err := config.DB.Delete(&userActivity).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, user_activity)
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":      "success delete user activity",
+		"userActivity": userActivity,
+	})
 }

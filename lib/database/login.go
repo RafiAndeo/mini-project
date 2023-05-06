@@ -18,14 +18,10 @@ func LoginUsers(user *models.User) (interface{}, error) {
 		return nil, err
 	}
 
-	user.Token, err = middlewares.CreateToken(int(user.ID))
+	Token, err := middlewares.CreateToken(int(userDB.ID))
 	if err != nil {
 		return nil, err
 	}
 
-	if err = config.DB.Save(user).Error; err != nil {
-		return nil, err
-	}
-
-	return user, nil
+	return Token, nil
 }

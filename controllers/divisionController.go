@@ -1,66 +1,85 @@
 package controllers
 
 import (
-	"mini-project/lib/database"
+	"mini-project/config"
 	"mini-project/models"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
-func GetDivisions(c echo.Context) error {
-	divisions, err := database.GetDivisions()
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+func GetDivisionsController(c echo.Context) error {
+	var divisions []models.Division
+
+	if err := config.DB.Find(&divisions).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, divisions)
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":   "success get all divisions",
+		"divisions": divisions,
+	})
 }
 
-func GetDivision(c echo.Context) error {
-	id := c.Param("id")
-	division, err := database.GetDivision(id)
+func GetDivisionController(c echo.Context) error {
+	division := models.Division{}
+	DivisionId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+		return err
 	}
-	return c.JSON(http.StatusOK, division)
+
+	if err1 := config.DB.First(&division, DivisionId).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":  "success get division by id",
+		"division": division,
+	})
 }
 
-func CreateDivision(c echo.Context) error {
+func CreateDivisionController(c echo.Context) error {
 	division := models.Division{}
 	c.Bind(&division)
-	err := database.CreateDivision(&division)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+
+	if err := config.DB.Save(&division).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, division)
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":  "success create new division",
+		"division": division,
+	})
 }
 
-func UpdateDivision(c echo.Context) error {
+func UpdateDivisionController(c echo.Context) error {
 	division := models.Division{}
 	c.Bind(&division)
-	err := database.UpdateDivision(&division)
+	DivisionId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+		return err
 	}
-	return c.JSON(http.StatusOK, division)
+
+	if err := config.DB.Where("id = ?", DivisionId).Updates(&division).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":  "success update division",
+		"division": division,
+	})
 }
 
-func DeleteDivision(c echo.Context) error {
+func DeleteDivisionController(c echo.Context) error {
 	division := models.Division{}
-	c.Bind(&division)
-	err := database.DeleteDivision(&division)
+	DivisionId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+		return err
 	}
-	return c.JSON(http.StatusOK, division)
+
+	if err := config.DB.Where("id = ?", DivisionId).Delete(&division).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":  "success delete division",
+		"division": division,
+	})
 }

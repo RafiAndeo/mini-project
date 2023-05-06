@@ -27,5 +27,5 @@ type Division struct {
 	gorm.Model
 	Name         tagDType `json:"name" form:"name" gorm:"type:enum('Pembina', 'Asisten', 'Member')"`
 	ThumbnailURL string   `json:"thumbnail_url" form:"thumbnail_url"`
-	UserID       uint     `json:"-" form:"-"`
+	UserID       uint     `json:"-" form:"-" gorm:"uniqueIndex:idx_division_user"`
 }
