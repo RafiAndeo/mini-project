@@ -1,66 +1,85 @@
 package controllers
 
 import (
-	"mini-project/lib/database"
+	"mini-project/config"
 	"mini-project/models"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
-func GetEvents(c echo.Context) error {
-	events, err := database.GetEvents()
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+func GetEventsController(c echo.Context) error {
+	var events []models.Event
+
+	if err := config.DB.Find(&events).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, events)
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success get all events",
+		"events":  events,
+	})
 }
 
-func GetEvent(c echo.Context) error {
-	id := c.Param("id")
-	event, err := database.GetEvent(id)
+func GetEventController(c echo.Context) error {
+	event := models.Event{}
+	EventId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+		return err
 	}
-	return c.JSON(http.StatusOK, event)
+
+	if err1 := config.DB.First(&event, EventId).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success get event by id",
+		"event":   event,
+	})
 }
 
-func CreateEvent(c echo.Context) error {
+func CreateEventController(c echo.Context) error {
 	event := models.Event{}
 	c.Bind(&event)
-	err := database.CreateEvent(&event)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+
+	if err := config.DB.Save(&event).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, event)
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success create new event",
+		"event":   event,
+	})
 }
 
-func UpdateEvent(c echo.Context) error {
+func UpdateEventController(c echo.Context) error {
 	event := models.Event{}
 	c.Bind(&event)
-	err := database.UpdateEvent(&event)
+	EventId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+		return err
 	}
-	return c.JSON(http.StatusOK, event)
+
+	if err := config.DB.Where("id = ?", EventId).Updates(&event).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success update event",
+		"event":   event,
+	})
 }
 
-func DeleteEvent(c echo.Context) error {
+func DeleteEventController(c echo.Context) error {
 	event := models.Event{}
-	c.Bind(&event)
-	err := database.DeleteEvent(&event)
+	EventId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+		return err
 	}
-	return c.JSON(http.StatusOK, event)
+
+	if err := config.DB.Where("id = ?", EventId).Delete(&event).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success delete event",
+		"event":   event,
+	})
 }

@@ -1,66 +1,84 @@
 package controllers
 
 import (
-	"mini-project/lib/database"
+	"mini-project/config"
 	"mini-project/models"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
-func GetProducts(c echo.Context) error {
-	products, err := database.GetProducts()
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+func GetProductsController(c echo.Context) error {
+	var products []models.Product
+
+	if err := config.DB.Find(&products).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, products)
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message":  "success get all products",
+		"products": products,
+	})
 }
 
-func GetProduct(c echo.Context) error {
-	id := c.Param("id")
-	product, err := database.GetProduct(id)
+func GetProductController(c echo.Context) error {
+	product := models.Product{}
+	ProductId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+		return err
 	}
-	return c.JSON(http.StatusOK, product)
+
+	if err1 := config.DB.First(&product, ProductId).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success get product by id",
+		"product": product,
+	})
 }
 
-func CreateProduct(c echo.Context) error {
+func CreateProductController(c echo.Context) error {
 	product := models.Product{}
 	c.Bind(&product)
-	err := database.CreateProduct(&product)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+
+	if err := config.DB.Save(&product).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, product)
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success create new product",
+		"product": product,
+	})
 }
 
-func UpdateProduct(c echo.Context) error {
+func UpdateProductController(c echo.Context) error {
 	product := models.Product{}
 	c.Bind(&product)
-	err := database.UpdateProduct(&product)
+	ProductId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+		return err
 	}
-	return c.JSON(http.StatusOK, product)
+
+	if err := config.DB.Where("id = ?", ProductId).Updates(&product).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success update product",
+		"product": product,
+	})
 }
 
-func DeleteProduct(c echo.Context) error {
+func DeleteProductController(c echo.Context) error {
 	product := models.Product{}
-	c.Bind(&product)
-	err := database.DeleteProduct(&product)
+	ProductId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+		return err
 	}
-	return c.JSON(http.StatusOK, product)
+
+	if err := config.DB.Where("id = ?", ProductId).Delete(&product).Error; err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success delete product",
+	})
 }

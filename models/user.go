@@ -13,6 +13,5 @@ type User struct {
 	RoleID     uint     `json:"-" form:"-" gorm:"uniqueIndex:idx_user_role"`
 	DivisionID uint     `json:"-" form:"-" gorm:"uniqueIndex:idx_user_division"`
 	Roles      []Role   `json:"roles" form:"roles"`
-	Divisions  tagDType `json:"divisions" form:"divisions" gorm:"type:enum('Pembina', 'Asisten', 'Member')"`
-	Token      string   `json:"token" form:"token"`
+	Division   tagDType `json:"division" form:"division" gorm:"type:enum('Pembina', 'Asisten', 'Member')"`
 }
