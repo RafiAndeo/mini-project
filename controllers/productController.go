@@ -15,6 +15,7 @@ func GetProductsController(c echo.Context) error {
 	if err := config.DB.Find(&products).Error; err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message":  "success get all products",
 		"products": products,
@@ -45,6 +46,7 @@ func CreateProductController(c echo.Context) error {
 	if err := config.DB.Save(&product).Error; err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success create new product",
 		"product": product,
@@ -62,6 +64,7 @@ func UpdateProductController(c echo.Context) error {
 	if err := config.DB.Where("id = ?", ProductId).Updates(&product).Error; err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success update product",
 		"product": product,
@@ -78,6 +81,7 @@ func DeleteProductController(c echo.Context) error {
 	if err := config.DB.Where("id = ?", ProductId).Delete(&product).Error; err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success delete product",
 	})

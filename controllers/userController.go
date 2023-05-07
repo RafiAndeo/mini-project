@@ -17,6 +17,7 @@ func GetUsersController(c echo.Context) error {
 	if err := config.DB.Find(&users).Error; err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success get all users",
 		"users":   users,
@@ -53,6 +54,7 @@ func CreateUserController(c echo.Context) error {
 	if err := config.DB.Save(&user).Error; err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success create new user",
 		"user":    user,
@@ -69,10 +71,12 @@ func UpdateUserController(c echo.Context) error {
 	if err1 := config.DB.First(&user, UserId).Error; err1 != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
 	}
+
 	c.Bind(&user)
 	if err1 := config.DB.Save(&user).Error; err1 != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
 	}
+
 	return c.JSON(http.StatusOK, map[string]string{
 		"message": "User updated successfully",
 	})
@@ -112,6 +116,7 @@ func LoginUserController(c echo.Context) error {
 	if t, ok := token.(string); ok {
 		dbUser.Token = t
 	}
+
 	if err := config.DB.Model(&dbUser).Update("token", dbUser.Token).Error; err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to save token to database")
 	}

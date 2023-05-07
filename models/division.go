@@ -32,5 +32,5 @@ type Division struct {
 	gorm.Model
 	Name         tagDType `json:"name" form:"name" gorm:"type:enum('Backend', 'Frontend', 'UI/UX', 'Mobile', 'Audio Composer', 'Game Designer', 'Game Programmer', 'Game Art');default:'Backend'"`
 	ThumbnailURL string   `json:"thumbnail_url" form:"thumbnail_url"`
-	UserID       uint     `json:"-" form:"-"`
+	UserID       uint     `json:"-" form:"-" gorm:"foreignKey:UserID;references:ID"`
 }

@@ -1,5 +1,6 @@
 Project Development
 
-1. Rework ERD and models
-2. Initialize JWT authentication
-3. Test JWT authentication
+1. Finishing Controller
+2. Finishing Model
+3. Initialize Unit Test
+4. Initialize Docker

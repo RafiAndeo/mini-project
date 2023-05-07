@@ -15,6 +15,7 @@ func GetRolesController(c echo.Context) error {
 	if err := config.DB.Find(&roles).Error; err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success get all roles",
 		"roles":   roles,
@@ -45,6 +46,7 @@ func CreateRoleController(c echo.Context) error {
 	if err := config.DB.Save(&role).Error; err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success create new role",
 		"role":    role,

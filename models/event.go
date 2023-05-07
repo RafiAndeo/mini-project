@@ -32,5 +32,5 @@ type Event struct {
 	EndDatetime    string   `json:"end_datetime" form:"end_datetime"`
 	CreatedBy      string   `json:"created_by" form:"created_by"`
 	UpdatedBy      string   `json:"updated_by" form:"updated_by"`
-	UserActivityID uint     `json:"-" form:"-"`
+	UserActivityID uint     `json:"-" form:"-" gorm:"foreignKey:UserActivityID;references:ID"`
 }

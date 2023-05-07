@@ -15,6 +15,7 @@ func GetDivisionsController(c echo.Context) error {
 	if err := config.DB.Find(&divisions).Error; err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message":   "success get all divisions",
 		"divisions": divisions,
@@ -45,6 +46,7 @@ func CreateDivisionController(c echo.Context) error {
 	if err := config.DB.Save(&division).Error; err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message":  "success create new division",
 		"division": division,
@@ -62,6 +64,7 @@ func UpdateDivisionController(c echo.Context) error {
 	if err := config.DB.Where("id = ?", DivisionId).Updates(&division).Error; err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message":  "success update division",
 		"division": division,
@@ -78,6 +81,7 @@ func DeleteDivisionController(c echo.Context) error {
 	if err := config.DB.Where("id = ?", DivisionId).Delete(&division).Error; err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message":  "success delete division",
 		"division": division,
