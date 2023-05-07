@@ -26,5 +26,5 @@ func (t tagRType) Value() (driver.Value, error) {
 type Role struct {
 	gorm.Model
 	Name   tagRType `json:"name" form:"name" gorm:"type:enum('Pembina', 'Asisten', 'Member');default:'Member'"`
-	UserID uint     `json:"-" form:"-"`
+	UserID uint     `json:"-" form:"-" gorm:"foreignKey:UserID;references:ID"`
 }
