@@ -56,5 +56,5 @@ func InitMigrate() {
 	DB.AutoMigrate(&models.Product{})
 	DB.AutoMigrate(&models.Role{})
 	DB.AutoMigrate(&models.User{})
-
+	DB.AutoMigrate(&models.UserActivity{})
 }

@@ -26,11 +26,11 @@ type Event struct {
 	gorm.Model
 	Title          string   `json:"title" form:"title"`
 	ThumbnailURL   string   `json:"thumbnail_url" form:"thumbnail_url"`
-	Tags           tagEType `json:"tags" form:"tags" gorm:"type:enum('Competition', 'Recruitment')"`
+	Tags           tagEType `json:"tags" form:"tags" gorm:"type:enum('Competition', 'Recruitment');default:'Competition'"`
 	Description    string   `json:"description" form:"description"`
 	StartDatetime  string   `json:"start_datetime" form:"start_datetime"`
 	EndDatetime    string   `json:"end_datetime" form:"end_datetime"`
 	CreatedBy      string   `json:"created_by" form:"created_by"`
 	UpdatedBy      string   `json:"updated_by" form:"updated_by"`
-	UserActivityID uint     `json:"-" form:"-" gorm:"uniqueIndex:idx_event_user_activity"`
+	UserActivityID uint     `json:"-" form:"-"`
 }

@@ -1,7 +1,7 @@
 package routes
 
 import (
-	constants "mini-project/constant"
+	constant "mini-project/constant"
 	"mini-project/controllers"
 	"mini-project/middlewares"
 
@@ -12,21 +12,20 @@ import (
 func StartRoute() *echo.Echo {
 	e := echo.New()
 
-	// Section 22
 	middlewares.LogMiddleware(e)
 
 	e.POST("/user", controllers.CreateUserController)
 	e.POST("/user/login", controllers.LoginUserController)
 
 	u := e.Group("/users")
-	u.Use(echojwt.JWT([]byte(constants.SECRET_JWT)))
+	u.Use(echojwt.JWT([]byte(constant.SECRET_JWT)))
 	u.GET("", controllers.GetUsersController)
 	u.GET("/:id", controllers.GetUserController)
 	u.PUT("/:id", controllers.UpdateUserController)
 	u.DELETE("/:id", controllers.DeleteUserController)
 
 	ua := e.Group("/user-activities")
-	ua.Use(echojwt.JWT([]byte(constants.SECRET_JWT)))
+	ua.Use(echojwt.JWT([]byte(constant.SECRET_JWT)))
 	ua.GET("", controllers.GetUserActivityController)
 	ua.GET("/:id", controllers.GetUserActivityByUserController)
 	ua.POST("", controllers.CreateUserActivityController)
@@ -34,7 +33,7 @@ func StartRoute() *echo.Echo {
 	ua.DELETE("/:id", controllers.DeleteUserActivityController)
 
 	r := e.Group("/roles")
-	r.Use(echojwt.JWT([]byte(constants.SECRET_JWT)))
+	r.Use(echojwt.JWT([]byte(constant.SECRET_JWT)))
 	r.GET("", controllers.GetRolesController)
 	r.GET("/:id", controllers.GetRoleController)
 	r.POST("", controllers.CreateRoleController)
@@ -42,7 +41,7 @@ func StartRoute() *echo.Echo {
 	r.DELETE("/:id", controllers.DeleteRoleController)
 
 	p := e.Group("/products")
-	p.Use(echojwt.JWT([]byte(constants.SECRET_JWT)))
+	p.Use(echojwt.JWT([]byte(constant.SECRET_JWT)))
 	p.GET("", controllers.GetProductsController)
 	p.GET("/:id", controllers.GetProductController)
 	p.POST("", controllers.CreateProductController)
@@ -50,7 +49,7 @@ func StartRoute() *echo.Echo {
 	p.DELETE("/:id", controllers.DeleteProductController)
 
 	ev := e.Group("/events")
-	ev.Use(echojwt.JWT([]byte(constants.SECRET_JWT)))
+	ev.Use(echojwt.JWT([]byte(constant.SECRET_JWT)))
 	ev.GET("", controllers.GetEventsController)
 	ev.GET("/:id", controllers.GetEventController)
 	ev.POST("", controllers.CreateEventController)
@@ -58,7 +57,7 @@ func StartRoute() *echo.Echo {
 	ev.DELETE("/:id", controllers.DeleteEventController)
 
 	d := e.Group("/divisions")
-	d.Use(echojwt.JWT([]byte(constants.SECRET_JWT)))
+	d.Use(echojwt.JWT([]byte(constant.SECRET_JWT)))
 	d.GET("", controllers.GetDivisionsController)
 	d.GET("/:id", controllers.GetDivisionController)
 	d.POST("", controllers.CreateDivisionController)
@@ -66,7 +65,7 @@ func StartRoute() *echo.Echo {
 	d.DELETE("/:id", controllers.DeleteDivisionController)
 
 	b := e.Group("/blogs")
-	b.Use(echojwt.JWT([]byte(constants.SECRET_JWT)))
+	b.Use(echojwt.JWT([]byte(constant.SECRET_JWT)))
 	b.GET("", controllers.GetBlogsController)
 	b.GET("/:id", controllers.GetBlogController)
 	b.POST("", controllers.CreateBlogController)
