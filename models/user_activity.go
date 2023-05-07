@@ -44,9 +44,9 @@ func (t statusType) Value() (driver.Value, error) {
 type UserActivity struct {
 	gorm.Model
 	Name         string     `json:"name" form:"name"`
-	Tags         tagUAType  `json:"tags" form:"tags" gorm:"enum('Event', 'Blog', 'Product')"`
+	Tags         tagUAType  `json:"tags" form:"tags" gorm:"enum('Event', 'Blog', 'Product');default:'Event'"`
 	ThumbnailURL string     `json:"thumbnail_url" form:"thumbnail_url"`
 	Description  string     `json:"description" form:"description"`
-	Status       statusType `json:"status" form:"status" gorm:"enum('Started', 'Postponed', 'Canceled', 'Finished')"`
-	UserID       uint       `json:"-" form:"-" gorm:"uniqueIndex:idx_user_activity_user"`
+	Status       statusType `json:"status" form:"status" gorm:"enum('Started', 'Postponed', 'Canceled', 'Finished');default:'Started'"`
+	UserID       uint       `json:"-" form:"-"`
 }

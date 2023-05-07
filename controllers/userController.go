@@ -98,12 +98,26 @@ func LoginUserController(c echo.Context) error {
 	user := models.User{}
 	c.Bind(&user)
 
-	Token, err := database.LoginUsers(&user)
+	token, err := database.LoginUsers(&user)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
+	var dbUser models.User
+	if err := config.DB.Where("email = ?", user.Email).First(&dbUser).Error; err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to find user record")
+	}
+
+	dbUser.Token = ""
+	if t, ok := token.(string); ok {
+		dbUser.Token = t
+	}
+	if err := config.DB.Model(&dbUser).Update("token", dbUser.Token).Error; err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to save token to database")
+	}
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "Success Login",
-		"token":   Token,
+		"token":   token,
 	})
 }
