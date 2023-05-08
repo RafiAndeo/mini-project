@@ -34,5 +34,5 @@ type Product struct {
 	PublishedAt    string   `json:"published_at" form:"published_at"`
 	CreatedBy      string   `json:"created_by" form:"created_by"`
 	UpdatedBy      string   `json:"updated_by" form:"updated_by"`
-	UserActivityID uint     `json:"-" form:"-" gorm:"foreignKey:UserActivityID;references:ID"`
+	UserActivityID uint     `json:"-" form:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
