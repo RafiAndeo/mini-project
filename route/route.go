@@ -14,8 +14,8 @@ func StartRoute() *echo.Echo {
 
 	middlewares.LogMiddleware(e)
 
-	e.POST("/user", controllers.CreateUserController)
-	e.POST("/user/login", controllers.LoginUserController)
+	e.POST("/register", controllers.CreateUserController)
+	e.POST("/login", controllers.LoginUserController)
 
 	u := e.Group("/users")
 	u.Use(echojwt.JWT([]byte(constant.SECRET_JWT)))

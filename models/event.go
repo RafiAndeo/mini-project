@@ -32,5 +32,5 @@ type Event struct {
 	EndDatetime    string   `json:"end_datetime" form:"end_datetime"`
 	CreatedBy      string   `json:"created_by" form:"created_by"`
 	UpdatedBy      string   `json:"updated_by" form:"updated_by"`
-	UserActivityID uint     `json:"-" form:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	UserActivityID uint     `json:"user_activity_id" form:"user_activity_id"`
 }
