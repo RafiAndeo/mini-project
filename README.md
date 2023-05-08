@@ -4,3 +4,4 @@ Project Development
 2. Finishing Model
 3. Initialize Unit Test
 4. Initialize Docker
+5. Reworking Use Case

@@ -1,4 +1,4 @@
-package middlewares
+package config
 
 import (
 	"mini-project/middlewares"
@@ -16,7 +16,12 @@ func TestLogMiddleware(t *testing.T) {
 		name string
 		args args
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Test Log Middleware",
+			args: args{
+				e: echo.New(),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
