@@ -55,19 +55,22 @@ func CreateRoleController(c echo.Context) error {
 
 func UpdateRoleController(c echo.Context) error {
 	role := models.Role{}
-	c.Bind(&role)
 	RoleId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return err
 	}
 
-	if err1 := config.DB.Where("id = ?", RoleId).Updates(&role).Error; err1 != nil {
+	if err1 := config.DB.First(&role, RoleId).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
+	}
+
+	c.Bind(&role)
+	if err1 := config.DB.Save(&role).Error; err1 != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success update role by id",
-		"role":    role,
 	})
 }
 
