@@ -55,19 +55,22 @@ func CreateProductController(c echo.Context) error {
 
 func UpdateProductController(c echo.Context) error {
 	product := models.Product{}
-	c.Bind(&product)
 	ProductId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return err
 	}
 
-	if err := config.DB.Where("id = ?", ProductId).Updates(&product).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	if err1 := config.DB.First(&product, ProductId).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
+	}
+
+	c.Bind(&product)
+	if err1 := config.DB.Save(&product).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success update product",
-		"product": product,
 	})
 }
 
@@ -78,8 +81,8 @@ func DeleteProductController(c echo.Context) error {
 		return err
 	}
 
-	if err := config.DB.Where("id = ?", ProductId).Delete(&product).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	if err1 := config.DB.Delete(&product, ProductId).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{

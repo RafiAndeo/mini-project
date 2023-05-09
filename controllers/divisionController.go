@@ -55,19 +55,22 @@ func CreateDivisionController(c echo.Context) error {
 
 func UpdateDivisionController(c echo.Context) error {
 	division := models.Division{}
-	c.Bind(&division)
 	DivisionId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return err
 	}
 
-	if err := config.DB.Where("id = ?", DivisionId).Updates(&division).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	if err1 := config.DB.First(&division, DivisionId).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
+	}
+
+	c.Bind(&division)
+	if err1 := config.DB.Save(&division).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message":  "success update division",
-		"division": division,
+		"message": "success update division",
 	})
 }
 
@@ -78,12 +81,11 @@ func DeleteDivisionController(c echo.Context) error {
 		return err
 	}
 
-	if err := config.DB.Where("id = ?", DivisionId).Delete(&division).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	if err1 := config.DB.Delete(&division, DivisionId).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message":  "success delete division",
-		"division": division,
+		"message": "success delete division",
 	})
 }

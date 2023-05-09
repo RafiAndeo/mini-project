@@ -1,7 +1,6 @@
 Project Development
 
-1. Finishing Controller
-2. Finishing Model
-3. Initialize Unit Test
-4. Initialize Docker
-5. Reworking Use Case
+1. Configurate Dockerfile
+2. Configurate docker-compose.yml
+3. Testing on Postman
+4. Initialize Postman Collection for API testing

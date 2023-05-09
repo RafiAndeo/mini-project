@@ -55,19 +55,22 @@ func CreateEventController(c echo.Context) error {
 
 func UpdateEventController(c echo.Context) error {
 	event := models.Event{}
-	c.Bind(&event)
 	EventId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return err
 	}
 
-	if err := config.DB.Where("id = ?", EventId).Updates(&event).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	if err1 := config.DB.First(&event, EventId).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
+	}
+
+	c.Bind(&event)
+	if err1 := config.DB.Save(&event).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success update event",
-		"event":   event,
 	})
 }
 
@@ -78,12 +81,11 @@ func DeleteEventController(c echo.Context) error {
 		return err
 	}
 
-	if err := config.DB.Where("id = ?", EventId).Delete(&event).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	if err1 := config.DB.Delete(&event, EventId).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "success delete event",
-		"event":   event,
 	})
 }

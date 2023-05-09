@@ -27,9 +27,9 @@ type Config struct {
 func InitDB() {
 	config := Config{
 		DB_Username: "root",
-		DB_Password: "",
+		DB_Password: "pass",
 		DB_Port:     "3306",
-		DB_Host:     "localhost",
+		DB_Host:     "mysql",
 		DB_Name:     "ase_database",
 	}
 

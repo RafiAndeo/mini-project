@@ -55,31 +55,34 @@ func CreateUserActivityController(c echo.Context) error {
 
 func UpdateUserActivityController(c echo.Context) error {
 	userActivity := models.UserActivity{}
-	c.Bind(&userActivity)
-	UserId, err := strconv.Atoi(c.Param("id"))
+	UserActivityId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return err
 	}
 
-	if err := config.DB.Save(&userActivity).Where("id = ?", UserId).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	if err1 := config.DB.First(&userActivity, UserActivityId).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
+	}
+
+	c.Bind(&userActivity)
+	if err1 := config.DB.Save(&userActivity).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message":      "success update user activity",
-		"userActivity": userActivity,
+		"message": "success update user activity",
 	})
 }
 
 func DeleteUserActivityController(c echo.Context) error {
 	userActivity := models.UserActivity{}
-	UserId, err := strconv.Atoi(c.Param("id"))
+	UserActivityId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return err
 	}
 
-	if err := config.DB.Delete(&userActivity, UserId).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	if err1 := config.DB.Delete(&userActivity, UserActivityId).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{

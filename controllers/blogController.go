@@ -55,14 +55,18 @@ func CreateBlogController(c echo.Context) error {
 
 func UpdateBlogController(c echo.Context) error {
 	blog := models.Blog{}
-	c.Bind(&blog)
 	BlogId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return err
 	}
 
-	if err := config.DB.Where("id = ?", BlogId).Updates(&blog).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	if err1 := config.DB.First(&blog, BlogId).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
+	}
+
+	c.Bind(&blog)
+	if err1 := config.DB.Save(&blog).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
@@ -78,8 +82,8 @@ func DeleteBlogController(c echo.Context) error {
 		return err
 	}
 
-	if err := config.DB.Where("id = ?", BlogId).Delete(&blog).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	if err1 := config.DB.Delete(&blog, BlogId).Error; err1 != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err1.Error())
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
