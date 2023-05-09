@@ -1,6 +1,4 @@
 Project Development
 
-1. Configurate Dockerfile
-2. Configurate docker-compose.yml
-3. Testing on Postman
-4. Initialize Postman Collection for API testing
+1. Configurate Amazon Web Services (AWS) EC2 instance
+2. Deploy web application on AWS EC2 instance
